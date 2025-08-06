@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuggyBank - Support Messages</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">BuggyBank</div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/transactions">Transactions</a>
+            <a href="/transfer">Transfer Funds</a>
+            <a href="/support/messages" class="active">Support</a>
+            <a href="/upload-document">Upload Document</a>
+            <a href="/profile">Profile</a>
+            <a href="/help">Help</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Support Messages</h1>
+        </header>
+
+        <div class="support-grid">
+            <div class="card">
+                <h2>Send New Message</h2>
+                <form action="/support/messages" method="POST" class="message-form">
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Describe your issue..." required></textarea>
+                        <small class="form-help">Our support team will review your message and get back to you.</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Message History</h2>
+                <div class="messages-list">
+                    {{messages}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // VULNERABILITY: Stored XSS - Messages are rendered without sanitization
+        // This allows any JavaScript in the messages to execute
+        document.addEventListener('DOMContentLoaded', function() {
+            // Any scripts in the messages will execute here
+            console.log('Support messages loaded - any XSS payloads will execute');
+        });
+    </script>
+</body>
+</html> 

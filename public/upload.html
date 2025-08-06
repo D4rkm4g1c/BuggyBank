@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuggyBank - Upload Document</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">BuggyBank</div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/transactions">Transactions</a>
+            <a href="/transfer">Transfer Funds</a>
+            <a href="/support/messages">Support</a>
+            <a href="/upload-document" class="active">Upload Document</a>
+            <a href="/profile">Profile</a>
+            <a href="/help">Help</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Upload Document</h1>
+        </header>
+
+        <div class="card">
+            <h2>Upload a Document</h2>
+            <!-- VULNERABILITY: No file type validation -->
+            <form action="/upload-document" method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="form-group">
+                    <label for="document">Select File</label>
+                    <input type="file" id="document" name="document" required>
+                    <small class="form-help">VULNERABILITY: No file type restrictions - you can upload any file type including scripts</small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Upload Document</button>
+            </form>
+            
+            <div class="upload-info">
+                <h3>Uploaded files can be accessed at:</h3>
+                <p><code>/documents/filename</code></p>
+                <p>VULNERABILITY: Files are stored in web-accessible directory without validation</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

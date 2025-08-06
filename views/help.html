@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuggyBank - Help</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">BuggyBank</div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/transactions">Transactions</a>
+            <a href="/transfer">Transfer Funds</a>
+            <a href="/support/messages">Support</a>
+            <a href="/upload-document">Upload Document</a>
+            <a href="/profile">Profile</a>
+            <a href="/help" class="active">Help</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="page-header">
+            <h1>Help & Documentation</h1>
+        </header>
+
+        <div class="help-grid">
+            <div class="card">
+                <h2>Search Help Topics</h2>
+                <form action="/help" method="GET" class="help-form">
+                    <div class="form-group">
+                        <label for="topic">Help Topic</label>
+                        <input type="text" id="topic" name="topic" placeholder="Enter help topic (e.g., welcome, transfer, security)" required>
+                        <small class="form-help">Enter a topic name to view help content</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                
+                <div class="help-examples">
+                    <h3>Available Topics:</h3>
+                    <ul>
+                        <li><a href="/help?topic=welcome">welcome</a></li>
+                        <li><a href="/help?topic=transfer">transfer</a></li>
+                        <li><a href="/help?topic=security">security</a></li>
+                        <li><a href="/help?topic=faq">faq</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Help Content</h2>
+                <div class="help-content">
+                    <pre>{{content}}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
