@@ -78,9 +78,9 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 const insertTestDataSQL = `
 USE buggybank;
 
--- Insert test users (VULNERABILITY: Plain text passwords for demo)
+-- Insert test users
 INSERT INTO users (username, password_hash, fullname, email, bio, role) VALUES
-('alice', 'password123', 'Alice Johnson', 'alice@example.com', 'Hello, I am Alice! <script>alert("XSS from Alice")</script>', 'user'),
+('alice', 'password123', 'Alice Johnson', 'alice@example.com', 'Hello, I am Alice!', 'user'),
 ('bob', 'password123', 'Bob Smith', 'bob@example.com', 'Bob here, nice to meet you!', 'user'),
 ('admin', 'admin123', 'Admin User', 'admin@buggybank.com', 'System Administrator', 'admin'),
 ('testuser', 'test123', 'Test User', 'test@example.com', 'This is a test user account', 'user');
@@ -88,7 +88,7 @@ INSERT INTO users (username, password_hash, fullname, email, bio, role) VALUES
 -- Insert test transactions
 INSERT INTO transactions (user_id, to_account, amount, note, timestamp) VALUES
 (1, 'ACCOUNT001', 1000.00, 'Initial deposit', NOW() - INTERVAL 5 DAY),
-(1, 'ACCOUNT002', -250.00, 'Payment for services <script>alert("XSS in transaction")</script>', NOW() - INTERVAL 3 DAY),
+(1, 'ACCOUNT002', -250.00, 'Payment for services', NOW() - INTERVAL 3 DAY),
 (1, 'ACCOUNT003', 500.00, 'Refund', NOW() - INTERVAL 1 DAY),
 (2, 'ACCOUNT004', 2000.00, 'Salary deposit', NOW() - INTERVAL 4 DAY),
 (2, 'ACCOUNT005', -150.00, 'Utility bill payment', NOW() - INTERVAL 2 DAY),
@@ -96,7 +96,7 @@ INSERT INTO transactions (user_id, to_account, amount, note, timestamp) VALUES
 
 -- Insert test support messages
 INSERT INTO support_messages (user_id, message, created_at) VALUES
-(1, 'Hello, I need help with my account. <script>alert("XSS in support message")</script>', NOW() - INTERVAL 2 DAY),
+(1, 'Hello, I need help with my account.', NOW() - INTERVAL 2 DAY),
 (1, 'Can you help me reset my password?', NOW() - INTERVAL 1 DAY),
 (2, 'I have a question about my recent transaction.', NOW() - INTERVAL 3 DAY),
 (3, 'Admin support message for testing.', NOW() - INTERVAL 4 DAY);

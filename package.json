@@ -1,7 +1,7 @@
 {
   "name": "buggybank",
   "version": "1.0.0",
-  "description": "A vulnerable banking application for penetration testing training",
+  "description": "A banking application for testing and development purposes",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -20,7 +20,7 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "keywords": ["security", "vulnerable", "banking", "penetration-testing"],
-  "author": "Security Training",
+  "keywords": ["banking", "web-application", "testing", "development"],
+  "author": "Development Team",
   "license": "MIT"
 } 

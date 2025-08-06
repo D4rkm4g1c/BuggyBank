@@ -49,11 +49,9 @@
     </div>
 
     <script>
-        // VULNERABILITY: Stored XSS - Messages are rendered without sanitization
-        // This allows any JavaScript in the messages to execute
+        // Support messages functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Any scripts in the messages will execute here
-            console.log('Support messages loaded - any XSS payloads will execute');
+            console.log('Support messages loaded');
         });
     </script>
 </body>

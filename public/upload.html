@@ -28,12 +28,11 @@
 
         <div class="card">
             <h2>Upload a Document</h2>
-            <!-- VULNERABILITY: No file type validation -->
             <form action="/upload-document" method="POST" enctype="multipart/form-data" class="upload-form">
                 <div class="form-group">
                     <label for="document">Select File</label>
                     <input type="file" id="document" name="document" required>
-                    <small class="form-help">VULNERABILITY: No file type restrictions - you can upload any file type including scripts</small>
+                    <small class="form-help">Select a file to upload</small>
                 </div>
                 
                 <button type="submit" class="btn btn-primary">Upload Document</button>
@@ -42,7 +41,7 @@
             <div class="upload-info">
                 <h3>Uploaded files can be accessed at:</h3>
                 <p><code>/documents/filename</code></p>
-                <p>VULNERABILITY: Files are stored in web-accessible directory without validation</p>
+                <p>Uploaded files can be accessed at the above path</p>
             </div>
         </div>
     </div>

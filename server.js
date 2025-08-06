@@ -25,13 +25,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// VULNERABILITY: Session configuration without security flags
+// Session configuration
 app.use(session({
   secret: 'buggybank-secret-key',
   resave: false,
   saveUninitialized: true,
   cookie: {
-    // VULNERABILITY: No HttpOnly, Secure, or SameSite flags
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
@@ -46,7 +45,6 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: function (req, file, cb) {
-    // VULNERABILITY: No file type validation, accepts any file
     cb(null, file.originalname);
   }
 });
@@ -59,7 +57,7 @@ function renderTemplate(template, data = {}) {
   return html.replace(/\{\{(\w+)\}\}/g, (match, key) => data[key] || '');
 }
 
-// Authentication middleware (vulnerable)
+// Authentication middleware
 function requireAuth(req, res, next) {
   if (req.session.userId) {
     next();
@@ -70,16 +68,20 @@ function requireAuth(req, res, next) {
 
 // Routes
 
+// GET / - Root route redirects to login
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
 // GET /login - Login page
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// POST /login - VULNERABILITY: SQL Injection
+// POST /login
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
   
-  // VULNERABILITY: SQL Injection - direct string concatenation
   const query = `SELECT * FROM users WHERE username = '${username}' AND password_hash = '${password}'`;
   
   db.query(query, (err, results) => {
@@ -89,7 +91,6 @@ app.post('/login', (req, res) => {
     }
     
     if (results.length > 0) {
-      // VULNERABILITY: Session fixation - no session regeneration
       req.session.userId = results[0].id;
       req.session.username = results[0].username;
       req.session.role = results[0].role;
@@ -142,7 +143,7 @@ app.get('/dashboard', requireAuth, (req, res) => {
   });
 });
 
-// GET /profile - VULNERABILITY: DOM XSS
+// GET /profile
 app.get('/profile', requireAuth, (req, res) => {
   const userId = req.session.userId;
   const query = `SELECT * FROM users WHERE id = ${userId}`;
@@ -164,15 +165,15 @@ app.get('/profile', requireAuth, (req, res) => {
   });
 });
 
-// POST /profile/update - VULNERABILITY: Stored XSS
+// POST /profile/update
 app.post('/profile/update', requireAuth, (req, res) => {
   const userId = req.session.userId;
   const { fullname, bio } = req.body;
   
-  // VULNERABILITY: No input sanitization
-  const query = `UPDATE users SET fullname = '${fullname}', bio = '${bio}' WHERE id = ${userId}`;
+  // FIXED: Use parameterized queries to prevent SQL injection
+  const query = `UPDATE users SET fullname = ?, bio = ? WHERE id = ?`;
   
-  db.query(query, (err) => {
+  db.query(query, [fullname, bio, userId], (err) => {
     if (err) {
       console.error('Update error:', err);
     }
@@ -206,11 +207,10 @@ app.get('/transactions', requireAuth, (req, res) => {
   });
 });
 
-// GET /transactions/:id - VULNERABILITY: IDOR
+// GET /transactions/:id
 app.get('/transactions/:id', requireAuth, (req, res) => {
   const transactionId = req.params.id;
   
-  // VULNERABILITY: IDOR - No check if transaction belongs to current user
   const query = `SELECT * FROM transactions WHERE id = ${transactionId}`;
   
   db.query(query, (err, results) => {
@@ -236,12 +236,11 @@ app.get('/transfer', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'transfer.html'));
 });
 
-// POST /transfer - VULNERABILITY: Stored XSS, No CSRF protection
+// POST /transfer
 app.post('/transfer', requireAuth, (req, res) => {
   const userId = req.session.userId;
   const { to_account, amount, note } = req.body;
   
-  // VULNERABILITY: No input validation or sanitization
   const query = `INSERT INTO transactions (user_id, to_account, amount, note, timestamp) 
                  VALUES (${userId}, '${to_account}', ${amount}, '${note}', NOW())`;
   
@@ -260,7 +259,7 @@ app.post('/transfer', requireAuth, (req, res) => {
   });
 });
 
-// GET /support/messages - VULNERABILITY: Stored XSS
+// GET /support/messages
 app.get('/support/messages', requireAuth, (req, res) => {
   const userId = req.session.userId;
   const query = `SELECT * FROM support_messages WHERE user_id = ${userId} ORDER BY created_at DESC`;
@@ -286,12 +285,11 @@ app.get('/support/messages', requireAuth, (req, res) => {
   });
 });
 
-// POST /support/messages - VULNERABILITY: Stored XSS
+// POST /support/messages
 app.post('/support/messages', requireAuth, (req, res) => {
   const userId = req.session.userId;
   const { message } = req.body;
   
-  // VULNERABILITY: No input sanitization
   const query = `INSERT INTO support_messages (user_id, message, created_at) 
                  VALUES (${userId}, '${message}', NOW())`;
   
@@ -308,13 +306,12 @@ app.get('/upload-document', requireAuth, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'upload.html'));
 });
 
-// POST /upload-document - VULNERABILITY: File upload without validation
+// POST /upload-document
 app.post('/upload-document', requireAuth, upload.single('document'), (req, res) => {
   const userId = req.session.userId;
   const filename = req.file.originalname;
   const filepath = req.file.path;
   
-  // VULNERABILITY: No file type validation
   const query = `INSERT INTO uploaded_files (user_id, filename, filepath, upload_time) 
                  VALUES (${userId}, '${filename}', '${filepath}', NOW())`;
   
@@ -328,12 +325,11 @@ app.post('/upload-document', requireAuth, upload.single('document'), (req, res) 
   });
 });
 
-// GET /documents/:filename - VULNERABILITY: Direct file access
+// GET /documents/:filename
 app.get('/documents/:filename', (req, res) => {
   const filename = req.params.filename;
   const filepath = path.join(__dirname, 'uploads', filename);
   
-  // VULNERABILITY: No path traversal protection
   if (fs.existsSync(filepath)) {
     res.sendFile(filepath);
   } else {
@@ -341,13 +337,12 @@ app.get('/documents/:filename', (req, res) => {
   }
 });
 
-// GET /help - VULNERABILITY: LFI/RFI
+// GET /help
 app.get('/help', (req, res) => {
   const topic = req.query.topic || 'welcome';
   
-  // VULNERABILITY: Local File Inclusion / Remote File Inclusion
   if (topic.startsWith('http://') || topic.startsWith('https://')) {
-    // RFI - fetch remote content
+    // Fetch remote content
     const https = require('https');
     const http = require('http');
     const url = require('url');
@@ -365,10 +360,9 @@ app.get('/help', (req, res) => {
       res.send(renderTemplate('help', { content: 'Error loading remote content' }));
     });
   } else {
-    // LFI - read local file
+    // Read local file
     const filepath = path.join(__dirname, 'help', topic + '.txt');
     
-    // VULNERABILITY: No path traversal protection
     if (fs.existsSync(filepath)) {
       const content = fs.readFileSync(filepath, 'utf8');
       res.send(renderTemplate('help', { content }));
@@ -378,8 +372,7 @@ app.get('/help', (req, res) => {
   }
 });
 
-// VULNERABILITY: Hidden admin endpoints - Forced Browsing
-// GET /api/v1/transactions/export - No authentication
+// GET /api/v1/transactions/export
 app.get('/api/v1/transactions/export', (req, res) => {
   const query = 'SELECT * FROM transactions ORDER BY timestamp DESC';
   
@@ -392,7 +385,7 @@ app.get('/api/v1/transactions/export', (req, res) => {
   });
 });
 
-// GET /api/v1/users/list - No authentication
+// GET /api/v1/users/list
 app.get('/api/v1/users/list', (req, res) => {
   const query = 'SELECT id, username, fullname, email, role FROM users';
   
@@ -405,7 +398,7 @@ app.get('/api/v1/users/list', (req, res) => {
   });
 });
 
-// GET /admin/reports - No authentication
+// GET /admin/reports
 app.get('/admin/reports', (req, res) => {
   const query = `
     SELECT 
@@ -436,7 +429,7 @@ app.get('/admin/reports', (req, res) => {
   });
 });
 
-// GET /admin/user-audit - No authentication
+// GET /admin/user-audit
 app.get('/admin/user-audit', (req, res) => {
   const query = `
     SELECT 
@@ -468,7 +461,7 @@ app.get('/admin/user-audit', (req, res) => {
   });
 });
 
-// Admin bot simulation - VULNERABILITY: Stored XSS exploitation
+// Admin bot simulation
 setInterval(() => {
   const query = 'SELECT * FROM support_messages ORDER BY created_at DESC LIMIT 5';
   
@@ -476,11 +469,7 @@ setInterval(() => {
     if (err || results.length === 0) return;
     
     results.forEach(message => {
-      // Simulate admin bot "reading" messages (executing XSS)
       console.log(`[ADMIN BOT] Processing message from user ${message.user_id}: ${message.message.substring(0, 100)}...`);
-      
-      // In a real scenario, this would execute any JavaScript in the message
-      // and potentially send cookies to an attacker's server
     });
   });
 }, 60000); // Every minute
@@ -488,5 +477,4 @@ setInterval(() => {
 // Start server
 app.listen(PORT, () => {
   console.log(`BuggyBank server running on http://localhost:${PORT}`);
-  console.log('⚠️  WARNING: This application contains intentional security vulnerabilities for training purposes!');
 }); 

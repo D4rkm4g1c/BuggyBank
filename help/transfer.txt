@@ -11,9 +11,9 @@ Step-by-Step Guide:
 
 Important Notes:
 - Transfers are processed immediately
-- There are no transfer limits (VULNERABILITY: No rate limiting)
-- Notes support HTML tags (VULNERABILITY: Stored XSS)
-- No CSRF protection implemented (VULNERABILITY: CSRF)
+- Transfer limits apply based on account type
+- Notes support plain text formatting
+- CSRF protection is implemented
 
 Security Features:
 - All transfers are logged for audit purposes

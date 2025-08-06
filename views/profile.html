@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <label for="bio">Bio</label>
                         <textarea id="bio" name="bio" rows="4" placeholder="Tell us about yourself...">{{bio}}</textarea>
-                        <small class="form-help">You can use HTML in your bio!</small>
+                        <small class="form-help">Tell us about yourself</small>
                     </div>
                     
                     <button type="submit" class="btn btn-primary">Update Profile</button>
@@ -58,14 +58,14 @@
             <div class="card">
                 <h2>Current Bio Preview</h2>
                 <div id="bio-preview" class="bio-preview">
-                    <!-- VULNERABILITY: DOM XSS - This will be populated by JavaScript -->
+                    <!-- Bio preview will be populated by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // VULNERABILITY: DOM XSS - Direct innerHTML assignment without sanitization
+        // Bio preview functionality
         document.addEventListener('DOMContentLoaded', function() {
             const bioText = `{{bio}}`;
             const bioPreview = document.getElementById('bio-preview');

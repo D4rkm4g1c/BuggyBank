@@ -16,6 +16,6 @@ Getting Started:
 4. Contact support if you need assistance
 
 Security Notice:
-This application contains intentional security vulnerabilities for educational purposes. Do not use this application for real banking activities.
+This application is for testing and development purposes only. Do not use this application for real banking activities.
 
 For more information, please contact our support team. 

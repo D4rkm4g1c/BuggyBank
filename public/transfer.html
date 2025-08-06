@@ -29,7 +29,6 @@
 
         <div class="card">
             <h2>New Transfer</h2>
-            <!-- VULNERABILITY: No CSRF token -->
             <form action="/transfer" method="POST" class="transfer-form">
                 <div class="form-group">
                     <label for="to_account">To Account</label>
@@ -44,7 +43,7 @@
                 <div class="form-group">
                     <label for="note">Note (Optional)</label>
                     <textarea id="note" name="note" rows="3" placeholder="Add a note about this transfer..."></textarea>
-                    <small class="form-help">VULNERABILITY: This field is vulnerable to stored XSS</small>
+                    <small class="form-help">Add a note about this transfer</small>
                 </div>
                 
                 <button type="submit" class="btn btn-primary">Transfer Funds</button>

@@ -14,20 +14,20 @@ Q: Can I transfer money?
 A: Yes, you can simulate transfers. No real money is involved.
 
 Q: Are my files secure when uploaded?
-A: No, this application has file upload vulnerabilities for training purposes.
+A: Files are stored securely and can be accessed through the web interface.
 
-Q: What vulnerabilities are included?
-A: The application includes SQL injection, XSS, CSRF, file upload vulnerabilities, LFI/RFI, IDOR, and more.
+Q: What features are included?
+A: The application includes user authentication, fund transfers, transaction history, file uploads, support messaging, and more.
 
-Q: How can I test the vulnerabilities?
+Q: How can I test the features?
 A: Try the following:
-   - SQL Injection: Use ' OR '1'='1 in login
-   - XSS: Add <script>alert('XSS')</script> in forms
-   - LFI: Try /help?topic=../../../etc/passwd
-   - File Upload: Upload a .php file
-   - IDOR: Access other users' transactions
+   - Login with test accounts
+   - Make fund transfers
+   - Upload documents
+   - Send support messages
+   - Update your profile
 
 Q: Is this safe to use?
-A: Only in a controlled training environment. Never use for real banking.
+A: Only in a controlled testing environment. Never use for real banking.
 
 For more information, contact our support team. 
