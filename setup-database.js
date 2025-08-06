@@ -8,13 +8,14 @@ const db = mysql.createConnection({
   multipleStatements: true
 });
 
-// SQL script to create database and tables
+// SQL script to drop and recreate database and tables
 const createDatabaseSQL = `
-CREATE DATABASE IF NOT EXISTS buggybank;
+DROP DATABASE IF EXISTS buggybank;
+CREATE DATABASE buggybank;
 USE buggybank;
 
 -- Users table
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(50) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
@@ -26,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Sessions table
-CREATE TABLE IF NOT EXISTS sessions (
+CREATE TABLE sessions (
   session_id VARCHAR(255) PRIMARY KEY,
   user_id INT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -35,7 +36,7 @@ CREATE TABLE IF NOT EXISTS sessions (
 );
 
 -- Transactions table
-CREATE TABLE IF NOT EXISTS transactions (
+CREATE TABLE transactions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   to_account VARCHAR(100) NOT NULL,
@@ -46,7 +47,7 @@ CREATE TABLE IF NOT EXISTS transactions (
 );
 
 -- Support messages table
-CREATE TABLE IF NOT EXISTS support_messages (
+CREATE TABLE support_messages (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   message TEXT NOT NULL,
@@ -55,7 +56,7 @@ CREATE TABLE IF NOT EXISTS support_messages (
 );
 
 -- Uploaded files table
-CREATE TABLE IF NOT EXISTS uploaded_files (
+CREATE TABLE uploaded_files (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
   filename VARCHAR(255) NOT NULL,
@@ -65,7 +66,7 @@ CREATE TABLE IF NOT EXISTS uploaded_files (
 );
 
 -- Audit logs table
-CREATE TABLE IF NOT EXISTS audit_logs (
+CREATE TABLE audit_logs (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT,
   action VARCHAR(100) NOT NULL,
@@ -113,7 +114,7 @@ INSERT INTO audit_logs (user_id, action, timestamp) VALUES
 
 async function setupDatabase() {
   try {
-    console.log('Creating database and tables...');
+    console.log('Dropping existing database and creating fresh database and tables...');
     await db.promise().query(createDatabaseSQL);
     console.log('Database and tables created successfully!');
     
