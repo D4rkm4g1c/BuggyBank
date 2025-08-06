@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Account Settings - BuggyBank{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Account Settings</h1>
+    
+    <form method="POST">
+        <!-- Vulnerable: No CSRF token -->
+        <div class="form-group">
+            <label for="theme">Theme:</label>
+            <select id="theme" name="theme">
+                <option value="light" {% if session.theme == 'light' %}selected{% endif %}>Light</option>
+                <option value="dark" {% if session.theme == 'dark' %}selected{% endif %}>Dark</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="btn">Save Settings</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Current Session Information</h3>
+    <p><strong>Session ID:</strong> {{ session.get('user_id') }}</p>
+    <p><strong>Username:</strong> {{ session.get('username') }}</p>
+    <p><strong>Theme:</strong> {{ session.get('theme', 'light') }}</p>
+</div>
+
+<div class="card">
+    <h3>Vulnerability Details</h3>
+    <ul>
+        <li><strong>Session Fixation:</strong> Session IDs are not rotated on login</li>
+        <li><strong>Insecure Cookies:</strong> Cookies lack HttpOnly and Secure flags</li>
+        <li><strong>No Session Invalidation:</strong> Sessions are not properly invalidated on logout</li>
+        <li><strong>Weak Session Management:</strong> Session data persists in database</li>
+    </ul>
+</div>
+{% endblock %} 

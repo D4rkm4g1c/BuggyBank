@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Document - BuggyBank{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Upload Document</h1>
+    
+    <form method="POST" enctype="multipart/form-data">
+        <!-- Vulnerable: No CSRF token -->
+        <div class="form-group">
+            <label for="file">Select File:</label>
+            <input type="file" id="file" name="file" required>
+            <!-- Vulnerable: No file type validation - allows .php, .jsp, .asp, etc. -->
+        </div>
+        
+        <button type="submit" class="btn">Upload File</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Vulnerability Details</h3>
+    <ul>
+        <li><strong>Insecure File Upload:</strong> No file type validation or restrictions</li>
+        <li><strong>Remote File Inclusion (RFI):</strong> Can upload executable files</li>
+        <li><strong>Local File Inclusion (LFI):</strong> Can upload files that can be executed</li>
+        <li><strong>Allowed File Types:</strong> Any file type including .php, .jsp, .asp, .exe, etc.</li>
+    </ul>
+    
+    <h4>Example Exploits:</h4>
+    <ul>
+        <li>Upload a PHP file with malicious code</li>
+        <li>Upload a JSP file for Java-based attacks</li>
+        <li>Upload executable files for system compromise</li>
+    </ul>
+</div>
+{% endblock %} 

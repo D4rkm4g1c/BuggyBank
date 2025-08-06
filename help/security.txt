@@ -1,21 +1,14 @@
 Security Information
 
-BuggyBank is committed to protecting your financial information. This demonstration application includes various security features for testing purposes.
+This application contains intentional security vulnerabilities for educational purposes.
 
-Current Security Measures:
-- Session-based authentication
-- Transaction logging
-- Audit trails for all activities
-- Input validation
-- File upload restrictions
-- Access control mechanisms
+Vulnerabilities include:
+- SQL Injection
+- Cross-Site Scripting (XSS)
+- Insecure File Upload
+- Local File Inclusion (LFI)
+- Insecure Direct Object References (IDOR)
+- Session Management Issues
+- Missing CSRF Protection
 
-Security Best Practices:
-- Always use strong passwords
-- Log out when finished
-- Monitor your transaction history
-- Report suspicious activity immediately
-
-Remember: This is a testing application. Real banking applications have much stronger security measures in place.
-
-For security concerns, contact our support team immediately. 
+DO NOT deploy this application in production environments. 

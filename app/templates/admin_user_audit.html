@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Admin User Audit - BuggyBank{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Admin User Audit Logs</h1>
+    <p><em>This page is accessible without authentication (Forced Browsing vulnerability)</em></p>
+    
+    <h2>Audit Logs</h2>
+    {% if logs %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Action</th>
+                    <th>User ID</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td>{{ log[4] }}</td>
+                    <td>{{ log[1] }}</td>
+                    <td>{{ log[2] or 'N/A' }}</td>
+                    <td>{{ log[3] or 'No details' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No audit logs found.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Vulnerability Details</h3>
+    <ul>
+        <li><strong>Forced Browsing:</strong> Hidden admin page accessible without authentication</li>
+        <li><strong>Information Disclosure:</strong> Exposes sensitive audit information</li>
+        <li><strong>No Access Control:</strong> Anyone can view admin audit logs</li>
+    </ul>
+</div>
+{% endblock %} 

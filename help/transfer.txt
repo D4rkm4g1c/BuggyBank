@@ -1,23 +1,13 @@
-How to Transfer Funds
+Transfer Instructions
 
-Transferring money with BuggyBank is quick and easy!
+To transfer funds to another user:
 
-Step-by-Step Guide:
-1. Navigate to the "Transfer Funds" page
-2. Enter the recipient's account number
-3. Specify the amount you want to transfer
-4. Add an optional note (supports HTML formatting)
-5. Click "Transfer Funds" to complete the transaction
+1. Go to the Transfer page
+2. Enter the recipient's username
+3. Enter the amount to transfer
+4. Optionally add a message
+5. Click "Send Transfer"
 
-Important Notes:
-- Transfers are processed immediately
-- Transfer limits apply based on account type
-- Notes support plain text formatting
-- CSRF protection is implemented
+Note: You can only transfer funds if you have sufficient balance in your account.
 
-Security Features:
-- All transfers are logged for audit purposes
-- Transaction history is available in your dashboard
-- Support team can assist with any issues
-
-For questions about transfers, please contact our support team. 
+Security Note: This is a vulnerable application for educational purposes only. 

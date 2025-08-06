@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Support Messages - BuggyBank{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Support Messages</h1>
+    
+    <form method="POST">
+        <!-- Vulnerable: No CSRF token -->
+        <div class="form-group">
+            <label for="message">Message to Support:</label>
+            <textarea id="message" name="message" rows="5" placeholder="Describe your issue..." required></textarea>
+            <!-- Vulnerable: Stored XSS - message will be viewed by admin bot -->
+        </div>
+        
+        <button type="submit" class="btn">Send Message</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>All Support Messages</h2>
+    {% if messages %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>User ID</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in messages %}
+                <tr>
+                    <td>{{ message[3] }}</td>
+                    <td>{{ message[1] }}</td>
+                    <td>{{ message[2]|safe }}</td>
+                    <!-- Vulnerable: Stored XSS - message content is rendered without sanitization -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No messages yet.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Vulnerability Details</h3>
+    <ul>
+        <li><strong>Stored XSS:</strong> Messages are stored and displayed without sanitization</li>
+        <li><strong>Cookie Theft:</strong> Admin bot views messages and can be targeted for cookie theft</li>
+        <li><strong>No Access Control:</strong> All users can see all support messages</li>
+    </ul>
+</div>
+{% endblock %} 

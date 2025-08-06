@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Reports - BuggyBank{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Admin Financial Reports</h1>
+    <p><em>This page is accessible without authentication (Forced Browsing vulnerability)</em></p>
+    
+    <h2>User Information</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Bio</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user[0] }}</td>
+                <td>{{ user[1] }}</td>
+                <td>{{ user[2] or 'No bio' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div style="margin-top: 2rem;">
+        <h3>Vulnerability Details</h3>
+        <ul>
+            <li><strong>Forced Browsing:</strong> This page is accessible without authentication</li>
+            <li><strong>Second-Order SQL Injection:</strong> User bios are executed as SQL queries</li>
+            <li><strong>Information Disclosure:</strong> User information is exposed</li>
+        </ul>
+    </div>
+</div>
+{% endblock %} 

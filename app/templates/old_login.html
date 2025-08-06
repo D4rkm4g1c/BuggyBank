@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Legacy Login - BuggyBank{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Legacy Login System</h1>
+    <p><em>This is the old login system (Forced Browsing vulnerability)</em></p>
+    
+    <form method="POST">
+        <!-- Vulnerable: No CSRF token -->
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <button type="submit" class="btn">Login</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Vulnerability Details</h3>
+    <ul>
+        <li><strong>Forced Browsing:</strong> Hidden legacy login page accessible without authentication</li>
+        <li><strong>Weak Authentication:</strong> No MFA, no rate limiting</li>
+        <li><strong>Deprecated System:</strong> Should not be accessible but still functional</li>
+    </ul>
+</div>
+{% endblock %} 

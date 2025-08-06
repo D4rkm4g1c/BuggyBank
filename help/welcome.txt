@@ -1,21 +1,10 @@
 Welcome to BuggyBank!
 
-Thank you for choosing BuggyBank for your online banking needs. This is a demonstration application designed for security training purposes.
+This is the welcome help file. You can access different help topics by changing the 'topic' parameter in the URL.
 
-Key Features:
-- Secure online banking
-- Real-time transaction monitoring
-- Easy fund transfers
-- 24/7 customer support
-- Document upload capabilities
+Available topics:
+- welcome (this file)
+- transfer (transfer instructions)
+- security (security information)
 
-Getting Started:
-1. Login with your credentials
-2. View your account balance on the dashboard
-3. Navigate through transactions and transfers
-4. Contact support if you need assistance
-
-Security Notice:
-This application is for testing and development purposes only. Do not use this application for real banking activities.
-
-For more information, please contact our support team. 
+For example: /help?topic=transfer 

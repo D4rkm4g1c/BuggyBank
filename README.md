@@ -1,212 +1,293 @@
-# BuggyBank - Banking Application
+# BuggyBank - Deliberately Vulnerable Web Application
 
-A fully functional web application simulating an online banking platform for testing and development purposes.
+A deliberately vulnerable web application designed for educational purposes in web application penetration testing. **DO NOT deploy in production environments.**
 
 ## ⚠️ WARNING
 
-This application is for testing and development purposes only. **DO NOT** use this application in production or with real financial data.
+This application contains **intentional security vulnerabilities** for educational purposes only. It is designed to be exploited in controlled lab environments for learning web application security testing techniques.
 
-## Features
+## 🏗️ Architecture
 
-- Complete banking interface with modern UI
-- User authentication and session management
-- Transaction history and fund transfers
-- Support messaging system
-- File upload functionality
-- Help documentation system
-- Admin audit and reporting pages
+- **Backend**: Python Flask
+- **Database**: SQLite
+- **Frontend**: HTML/CSS with Jinja2 templates
+- **Container**: Docker
+- **Bot**: Python admin bot for simulating support staff
 
-## Application Features
+## 🚀 Quick Start
 
-### 1. User Authentication
-- Login system with username and password
-- Session management
-- User roles (user, admin)
+### Using Docker Compose (Recommended)
 
-### 2. Banking Operations
-- Account balance display
-- Fund transfers between accounts
-- Transaction history
-- Transaction details
+```bash
+# Clone the repository
+git clone <repository-url>
+cd BuggyBank
 
-### 3. User Management
-- Profile management
-- Bio updates with live preview
-- Support messaging system
+# Build and run with Docker Compose
+docker-compose up --build
 
-### 4. File Management
-- Document upload functionality
-- File storage and retrieval
-- Document access via web interface
+# Access the application
+open http://localhost:5000
+```
 
-### 5. Help System
-- Dynamic help content loading
-- Support for local and remote content
-- Topic-based help navigation
+### Using Docker
 
-### 6. Administrative Features
-- User activity audit logs
-- Financial reports
-- API endpoints for data export
+```bash
+# Build the Docker image
+docker build -t buggybank .
 
-### 7. Security Features
-- Session-based authentication
-- Transaction logging
-- Audit trails for all activities
+# Run the container
+docker run -p 5000:5000 -v $(pwd)/database:/app/database -v $(pwd)/uploads:/app/uploads buggybank
 
-## Technology Stack
+# Access the application
+open http://localhost:5000
+```
 
-- **Backend**: Node.js + Express
-- **Database**: MySQL
-- **Frontend**: HTML5, CSS3, JavaScript (vanilla)
-- **Sessions**: express-session with cookie-based storage
+### Manual Setup
 
-## Installation
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-### Prerequisites
+# Run the application
+python run.py
 
-- Node.js (v14 or higher)
-- MySQL (v8.0 or higher)
-- npm or yarn
+# Access the application
+open http://localhost:5000
+```
 
-### Setup Instructions
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd BuggyBank
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Configure MySQL**
-   - Start MySQL service
-   - Create a database user (or use root)
-   - Update database connection in `server.js` and `setup-database.js` if needed
-
-4. **Setup database**
-   ```bash
-   npm run setup-db
-   ```
-
-5. **Start the application**
-   ```bash
-   npm start
-   ```
-
-6. **Access the application**
-   - Open browser and navigate to `http://localhost:3000`
-   - Login with test accounts:
-     - Username: `alice`, Password: `password123`
-     - Username: `bob`, Password: `password123`
-     - Username: `admin`, Password: `admin123`
-     - Username: `testuser`, Password: `test123`
-
-## Test Accounts
+## 📊 Sample Accounts
 
 | Username | Password | Role |
 |----------|----------|------|
-| alice    | password123 | user |
-| bob      | password123 | user |
-| admin    | admin123    | admin |
-| testuser | test123     | user |
+| admin | admin123 | Administrator |
+| john | password123 | Regular User |
+| alice | password123 | Regular User |
+| bob | password123 | Regular User |
 
-## Usage Guide
+## 🔐 Vulnerability Documentation
 
-### Getting Started
-1. Login with one of the test accounts
-2. Explore the dashboard to view your account balance
-3. Use the transfer functionality to send funds
-4. Check your transaction history
-5. Update your profile information
-6. Send support messages if needed
+### 1. SQL Injection (Blind/Time-based)
+- **Route**: `/login`
+- **Vulnerability**: Direct string concatenation in SQL queries
+- **Exploit**: `' OR 1=1--` in username field
+- **Impact**: Authentication bypass, data extraction
 
-### Available Features
-- **Dashboard**: View account balance and recent transactions
-- **Transfers**: Send money to other accounts
-- **Transactions**: View complete transaction history
-- **Profile**: Update personal information and bio
-- **Support**: Send messages to support team
-- **Upload**: Upload and manage documents
-- **Help**: Access help documentation
+### 2. Stored XSS
+- **Route**: `/transfer`
+- **Vulnerability**: Message field stored and displayed without sanitization
+- **Exploit**: `<script>alert('XSS')</script>` in transfer message
+- **Impact**: Session hijacking, cookie theft
 
-### Test Accounts
-- Username: `alice`, Password: `password123`
-- Username: `bob`, Password: `password123`
-- Username: `admin`, Password: `admin123`
-- Username: `testuser`, Password: `test123`
+### 3. Second-Order SQL Injection
+- **Route**: `/profile/update-bio` → `/admin/reports`
+- **Vulnerability**: Bio field stored and later executed as SQL
+- **Exploit**: Store SQL in bio, trigger via admin reports
+- **Impact**: Database manipulation, data extraction
 
-## Project Structure
+### 4. IDOR (Insecure Direct Object Reference)
+- **Route**: `/transaction-history`
+- **Vulnerability**: No authorization check on user_id parameter
+- **Exploit**: `?user_id=1`, `?user_id=2`, etc.
+- **Impact**: Unauthorized access to other users' data
+
+### 5. File Upload Vulnerabilities
+- **Route**: `/upload-document`
+- **Vulnerability**: No file type validation
+- **Exploit**: Upload `.php`, `.jsp`, `.asp` files
+- **Impact**: Remote code execution
+
+### 6. Local File Inclusion (LFI)
+- **Route**: `/help`
+- **Vulnerability**: Direct file inclusion without validation
+- **Exploit**: `?topic=../etc/passwd`
+- **Impact**: File system access, sensitive data exposure
+
+### 7. Forced Browsing
+- **Routes**: `/admin/reports`, `/admin/user-audit`, `/old-login`
+- **Vulnerability**: Hidden pages accessible without authentication
+- **Exploit**: Direct URL access
+- **Impact**: Information disclosure, unauthorized access
+
+### 8. DOM XSS
+- **Route**: `/search`
+- **Vulnerability**: User input reflected in innerHTML
+- **Exploit**: `<script>alert('XSS')</script>` in search query
+- **Impact**: Client-side code execution
+
+### 9. Session Management Issues
+- **Route**: `/account/settings`
+- **Vulnerability**: No session rotation, insecure cookies
+- **Exploit**: Session fixation, cookie manipulation
+- **Impact**: Session hijacking
+
+### 10. Missing Rate Limiting
+- **Routes**: `/api/transactions`, `/funds/transfer`
+- **Vulnerability**: No request throttling
+- **Exploit**: Brute force attacks, DoS
+- **Impact**: Resource exhaustion, account compromise
+
+### 11. CSRF Vulnerabilities
+- **Routes**: All POST endpoints
+- **Vulnerability**: No CSRF tokens
+- **Exploit**: Cross-site request forgery
+- **Impact**: Unauthorized actions on behalf of user
+
+### 12. Legacy API Exposure
+- **Routes**: `/api/v1/transactions/export`, `/api/v1/users/list`
+- **Vulnerability**: No authentication required
+- **Exploit**: Direct API access
+- **Impact**: Data leakage, information disclosure
+
+## 🤖 Admin Bot
+
+The application includes an admin bot that simulates support staff reviewing messages:
+
+```bash
+# Run the admin bot
+python bot/admin_bot.py
+```
+
+The bot:
+- Reviews support messages every 30 seconds
+- Processes message content without sanitization
+- Vulnerable to stored XSS attacks
+- Can be targeted for cookie theft
+
+## 📁 Project Structure
 
 ```
-BuggyBank/
-├── server.js              # Main application server
-├── setup-database.js      # Database setup script
-├── package.json           # Dependencies and scripts
-├── views/                 # HTML templates
-│   ├── dashboard.html
-│   ├── profile.html
-│   ├── transactions.html
-│   ├── support-messages.html
-│   ├── help.html
-│   └── admin-*.html
-├── public/                # Static files
-│   ├── css/
-│   │   └── style.css
-│   ├── login.html
-│   ├── transfer.html
-│   └── upload.html
-├── help/                  # Help files for LFI
-│   ├── welcome.txt
-│   ├── transfer.txt
-│   ├── security.txt
-│   └── faq.txt
-└── uploads/               # File upload directory
+buggybank/
+├── app/
+│   ├── __init__.py          # Flask app factory
+│   ├── routes.py            # All vulnerable routes
+│   ├── models.py            # Database models
+│   └── templates/           # HTML templates
+├── bot/
+│   └── admin_bot.py        # Admin bot simulation
+├── database/
+│   └── buggybank.db        # SQLite database
+├── help/                   # Help files for LFI
+├── uploads/                # File upload directory
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── run.py
+└── README.md
 ```
 
-## Database Schema
+## 🧪 Testing Vulnerabilities
 
-### Tables
-- `users` - User accounts and profiles
-- `sessions` - Session management
-- `transactions` - Financial transactions
-- `support_messages` - Support system messages
-- `uploaded_files` - File upload records
-- `audit_logs` - Activity logging
+### SQL Injection
+```bash
+# Login bypass
+curl -X POST http://localhost:5000/login \
+  -d "username=' OR 1=1--&password=anything"
+```
 
-## Development Scenarios
+### XSS
+```bash
+# Stored XSS in transfer message
+curl -X POST http://localhost:5000/transfer \
+  -d "to_username=admin&amount=1&message=<script>alert('XSS')</script>"
+```
 
-### Scenario 1: User Management
-1. Test user registration and login
-2. Explore profile management features
-3. Test session handling
+### LFI
+```bash
+# Path traversal
+curl "http://localhost:5000/help?topic=../etc/passwd"
+```
 
-### Scenario 2: Banking Operations
-1. Test fund transfer functionality
-2. Verify transaction history
-3. Test account balance calculations
+### IDOR
+```bash
+# View other user's transactions
+curl "http://localhost:5000/transaction-history?user_id=1"
+```
 
-### Scenario 3: File Management
-1. Test document upload functionality
-2. Verify file storage and retrieval
-3. Test file access controls
+## 🔧 Development
 
-### Scenario 4: Administrative Features
-1. Test admin reporting features
-2. Verify audit logging
-3. Test API endpoints
+### Adding New Vulnerabilities
 
-## Contributing
+1. Add route in `app/routes.py`
+2. Create template in `app/templates/`
+3. Update database schema if needed
+4. Document vulnerability in README
 
-This is a development application. If you want to add new features or improvements, please submit a pull request.
+### Database Schema
 
-## License
+```sql
+-- Users table
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    email TEXT,
+    balance REAL DEFAULT 1000.0,
+    bio TEXT,
+    session_id TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-This project is for development and testing purposes only. Use responsibly and only in controlled environments.
+-- Transactions table
+CREATE TABLE transactions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    from_user_id INTEGER,
+    to_user_id INTEGER,
+    amount REAL NOT NULL,
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-## Disclaimer
+-- Support messages table
+CREATE TABLE support_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-This application is designed for development and testing purposes only. Always follow security best practices in production applications. 
+-- Admin audit logs table
+CREATE TABLE admin_audit (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    action TEXT NOT NULL,
+    user_id INTEGER,
+    details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+## 📚 Educational Resources
+
+This application is designed to teach:
+
+- **OWASP Top 10** vulnerabilities
+- **Web application penetration testing** techniques
+- **Security testing** methodologies
+- **Vulnerability exploitation** in controlled environments
+
+## ⚖️ Legal Notice
+
+This application is for **educational purposes only**. Users are responsible for:
+
+- Using this application only in controlled, authorized environments
+- Not deploying in production systems
+- Complying with applicable laws and regulations
+- Obtaining proper authorization before testing
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch
+3. Add new vulnerabilities or improve existing ones
+4. Update documentation
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+**Remember**: This is a deliberately vulnerable application for educational purposes. Never deploy in production environments! 

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction History - BuggyBank{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1>Transaction History</h1>
+    
+    <!-- Vulnerable: IDOR - user_id can be manipulated in URL -->
+    <p>Showing transactions for user ID: {{ request.args.get('user_id', session.user_id) }}</p>
+    
+    {% if transactions %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>From User ID</th>
+                    <th>To User ID</th>
+                    <th>Amount</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction[5] }}</td>
+                    <td>{{ transaction[1] }}</td>
+                    <td>{{ transaction[2] }}</td>
+                    <td>${{ "%.2f"|format(transaction[3]) }}</td>
+                    <td>{{ transaction[4] or 'No message' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No transactions found.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Vulnerability Details</h3>
+    <ul>
+        <li><strong>IDOR (Insecure Direct Object Reference):</strong> You can view any user's transactions by changing the user_id parameter</li>
+        <li><strong>Example:</strong> Try accessing <code>/transaction-history?user_id=1</code>, <code>/transaction-history?user_id=2</code>, etc.</li>
+        <li><strong>No Authorization:</strong> No check to ensure you can only view your own transactions</li>
+    </ul>
+</div>
+{% endblock %} 
