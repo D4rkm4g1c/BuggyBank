@@ -27,7 +27,7 @@ cd BuggyBank
 docker-compose up --build
 
 # Access the application
-open http://localhost:5000
+open http://localhost:3000
 ```
 
 ### Using Docker
@@ -37,10 +37,10 @@ open http://localhost:5000
 docker build -t buggybank .
 
 # Run the container
-docker run -p 5000:5000 -v $(pwd)/database:/app/database -v $(pwd)/uploads:/app/uploads buggybank
+docker run -p 3000:3000 -v $(pwd)/database:/app/database -v $(pwd)/uploads:/app/uploads buggybank
 
 # Access the application
-open http://localhost:5000
+open http://localhost:3000
 ```
 
 ### Manual Setup
@@ -53,7 +53,7 @@ pip install -r requirements.txt
 python run.py
 
 # Access the application
-open http://localhost:5000
+open http://localhost:3000
 ```
 
 ## 📊 Sample Accounts
@@ -181,27 +181,27 @@ buggybank/
 ### SQL Injection
 ```bash
 # Login bypass
-curl -X POST http://localhost:5000/login \
+curl -X POST http://localhost:3000/login \
   -d "username=' OR 1=1--&password=anything"
 ```
 
 ### XSS
 ```bash
 # Stored XSS in transfer message
-curl -X POST http://localhost:5000/transfer \
+curl -X POST http://localhost:3000/transfer \
   -d "to_username=admin&amount=1&message=<script>alert('XSS')</script>"
 ```
 
 ### LFI
 ```bash
 # Path traversal
-curl "http://localhost:5000/help?topic=../etc/passwd"
+curl "http://localhost:3000/help?topic=../etc/passwd"
 ```
 
 ### IDOR
 ```bash
 # View other user's transactions
-curl "http://localhost:5000/transaction-history?user_id=1"
+curl "http://localhost:3000/transaction-history?user_id=1"
 ```
 
 ## 🔧 Development

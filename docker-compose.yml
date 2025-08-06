@@ -3,7 +3,7 @@ services:
   buggybank:
     build: .
     ports:
-      - "5000:5000"
+      - "3000:3000"
     volumes:
       - ./database:/app/database
       - ./uploads:/app/uploads

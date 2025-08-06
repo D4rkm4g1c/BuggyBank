@@ -20,7 +20,7 @@ COPY . .
 RUN mkdir -p database uploads
 
 # Expose port
-EXPOSE 5000
+EXPOSE 3000
 
 # Run the application
 CMD ["python", "run.py"] 
