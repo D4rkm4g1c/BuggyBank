@@ -1,12 +1,35 @@
-version: '3'
+version: '3.8'
+
 services:
-  buggybank:
-    build: .
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend/uploads:/usr/src/app/uploads
+      - ./backend/logs:/usr/src/app/logs
+      - ./backend/buggybank.db:/usr/src/app/buggybank.db
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+    command: npm run dev
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
     ports:
       - "3000:3000"
-    volumes:
-      - ./database:/app/database
-      - ./uploads:/app/uploads
+    depends_on:
+      - backend
     environment:
-      - FLASK_ENV=development
-      - FLASK_DEBUG=1 
+      - REACT_APP_API_URL=http://localhost:3001/api
+    restart: unless-stopped
+
+  # Optional: Add a vulnerable web server for file serving
+  file-server:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend/uploads:/usr/share/nginx/html/uploads:ro
+    restart: unless-stopped 

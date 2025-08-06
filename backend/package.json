@@ -1,0 +1,37 @@
+{
+  "name": "buggybank-backend",
+  "version": "1.0.0",
+  "description": "Vulnerable banking application backend for penetration testing training",
+  "main": "server.js",
+  "scripts": {
+    "start": "node start.js",
+    "dev": "nodemon start.js",
+    "seed": "node database/seed.js",
+    "reset": "node database/init.js && node database/seed.js",
+    "init": "node database/init.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "jsonwebtoken": "^9.0.2",
+    "bcrypt": "^5.1.1",
+    "multer": "^1.4.5-lts.1",
+    "cors": "^2.8.5",
+    "cookie-parser": "^1.4.6",
+    "ws": "^8.14.2",
+    "axios": "^1.6.0",
+    "fs-extra": "^11.1.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": [
+    "vulnerable",
+    "banking",
+    "penetration-testing",
+    "security-training"
+  ],
+  "author": "BuggyBank Team",
+  "license": "MIT"
+} 
