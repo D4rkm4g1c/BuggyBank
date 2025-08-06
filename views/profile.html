@@ -67,14 +67,14 @@
     <script>
         // Bio preview functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const bioText = `{{bio}}`;
             const bioPreview = document.getElementById('bio-preview');
             
             // VULNERABILITY: Direct innerHTML assignment allows XSS
-            bioPreview.innerHTML = bioText;
+            // Get bio from the textarea value instead of template variable
+            const bioTextarea = document.getElementById('bio');
+            bioPreview.innerHTML = bioTextarea.value;
             
             // Live preview as user types
-            const bioTextarea = document.getElementById('bio');
             bioTextarea.addEventListener('input', function() {
                 // VULNERABILITY: Direct innerHTML assignment without sanitization
                 bioPreview.innerHTML = this.value;
